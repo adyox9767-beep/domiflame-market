@@ -1,11 +1,58 @@
+"use client";
+
+import ProtectedRoute from "@/components/ProtectedRoute";
+import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
+
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import { cards } from "@/data/cards";
 
 export default function MarketPage() {
+  const [liveCards, setLiveCards] =
+  useState(cards);
+  useEffect(() => {
+
+  const interval = setInterval(() => {
+
+    setLiveCards((prev) =>
+      prev.map((card) => {
+
+        const randomChange =
+          Math.floor(Math.random() * 200 - 100);
+
+        const newPrice =
+          Math.max(500, card.price + randomChange);
+
+        return {
+          ...card,
+          price: newPrice,
+          change:
+            randomChange >= 0
+              ? `+${(
+                  randomChange / 100
+                ).toFixed(2)}%`
+              : `${(
+                  randomChange / 100
+                ).toFixed(2)}%`,
+        };
+      })
+    );
+
+  }, 3000);
+
+  return () => clearInterval(interval);
+
+}, []);
   return (
+  <ProtectedRoute>
     <main className="min-h-screen bg-black text-white px-6 md:px-10 py-10">
+
+<Navbar />
 
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
@@ -50,19 +97,26 @@ export default function MarketPage() {
       {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-        {cards.map((card)=>(
+        {liveCards.map((card) => (
           <Link
-  href={`/cards/${card}`}
+          key={card.id}
+  href={`/cards/${card.id}`}
 >
 
             {/* Card Image */}
-            <div className="relative h-80 bg-gradient-to-b from-yellow-500/20 to-black">
+            <div className="relative h-80">
 
-              <div className="absolute top-4 right-4 bg-yellow-500 text-black text-xs px-3 py-1 rounded-full font-bold">
-                {card.rarity}
-              </div>
+  <img
+    src={card.image}
+    alt={card.name}
+    className="w-full h-full object-contain rounded-t-3xl"
+  />
 
-            </div>
+  <div className="absolute top-4 right-4 bg-yellow-500 text-black text-xs px-3 py-1 rounded-full font-bold">
+    {card.rarity}
+  </div>
+
+</div>
 
             {/* Card Info */}
             <div className="p-5">
@@ -75,7 +129,6 @@ export default function MarketPage() {
                   </h2>
 
                   <p className="text-zinc-500 text-sm mt-1">
-                    ```tsx id="jlwm85"
                     {card.category}
                   </p>
                 </div>
@@ -86,8 +139,13 @@ export default function MarketPage() {
                     ₹ {card.price}
                   </p>
 
-                  <p className="text-green-500 text-xs">
-                    {card.change}
+<p
+  className={`text-xs ${
+    card.change.startsWith("+")
+      ? "text-green-500"
+      : "text-red-500"
+  }`}
+>                    {card.change}
                   </p>
 
                 </div>
@@ -104,6 +162,7 @@ export default function MarketPage() {
 
       </div>
 
-    </main>
+        </main>
+  </ProtectedRoute>
   );
 }

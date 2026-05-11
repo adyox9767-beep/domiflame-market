@@ -1,5 +1,6 @@
 "use client";
 
+import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -29,70 +30,7 @@ const logout = async () => {
   return (
     <main className="min-h-screen bg-black text-white">
 
-      {/* Navbar */}
-      <nav className="flex items-center justify-between px-8 py-6 border-b border-zinc-800">
-
-        <div className="flex items-center gap-3">
-
-  <Image
-    src="/logo.png"
-    alt="Domiflame Logo"
-    width={55}
-    height={55}
-  />
-
-  <Image
-    src="/textlogo.png"
-    alt="Domiflame"
-    width={180}
-    height={60}
-  />
-
-</div>
-
-        <div className="flex items-center gap-6">
-          <Link href="/market">
-  <button className="hover:text-yellow-400 transition">
-    Market
-  </button>
-</Link>
-
-          <Link href="/store">
-  <button className="hover:text-yellow-400 transition">
-    Store
-  </button>
-</Link>
-
-          {
-  user ? (
-    <div className="flex items-center gap-4">
-
-      <Image
-        src={user.photoURL}
-        alt="user"
-        width={40}
-        height={40}
-        className="rounded-full"
-      />
-
-      <button
-        onClick={logout}
-        className="bg-red-500 px-5 py-2 rounded-xl font-bold"
-      >
-        Logout
-      </button>
-
-    </div>
-  ) : (
-    <Link href="/login">
-      <button className="bg-yellow-500 text-black px-5 py-2 rounded-xl font-bold hover:scale-105 transition">
-        Login
-      </button>
-    </Link>
-  )
-}
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero */}
       <section className="flex flex-col items-center justify-center text-center h-[80vh] px-6">
